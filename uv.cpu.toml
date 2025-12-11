@@ -1,0 +1,8 @@
+[environments.cpu]
+python = "3.12"
+platform = "linux-x86_64"
+
+[override-dependencies]
+torch = "==2.9.1+cpu"
+torchvision = "==0.24.1+cpu"
+

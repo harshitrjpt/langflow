@@ -4,6 +4,8 @@
 VERSION=$(shell grep "^version" pyproject.toml | sed 's/.*\"\(.*\)\"$$/\1/')
 DOCKER=podman
 DOCKERFILE=docker/build_and_push.Dockerfile
+DOCKERFILE_AMD=docker/build_and_push_amd.Dockerfile
+DOCKERFILE_BACKEND_AMD=docker/build_and_push_backend_amd.Dockerfile
 DOCKERFILE_BACKEND=docker/build_and_push_backend.Dockerfile
 DOCKERFILE_FRONTEND=docker/frontend/build_and_push_frontend.Dockerfile
 DOCKER_COMPOSE=docker_example/docker-compose.yml
@@ -344,6 +346,10 @@ endif
 
 docker_build: dockerfile_build clear_dockerimage ## build DockerFile
 
+docker_build_amd: dockerfile_build_amd clear_dockerimage ## build DockerFile
+
+docker_build_backend_amd: dockerfile_build_be_amd clear_dockerimage ## build Backend DockerFile
+
 docker_build_backend: dockerfile_build_be clear_dockerimage ## build Backend DockerFile
 
 docker_build_frontend: dockerfile_build_fe clear_dockerimage ## build Frontend Dockerfile
@@ -354,6 +360,20 @@ dockerfile_build:
 	@$(DOCKER) build --rm \
 		-f ${DOCKERFILE} \
 		-t langflow:${VERSION} .
+
+dockerfile_build_amd:
+	@echo 'BUILDING DOCKER IMAGE: ${DOCKERFILE_AMD}'
+	@command -v $(DOCKER) >/dev/null 2>&1 || { echo "Error: $(DOCKER) is not installed. Please install $(DOCKER), or run 'make docker_build DOCKER=podman' (or DOCKER=docker) if you have an alternative installed."; exit 1; }
+	@$(DOCKER) build --arch=amd64 --rm \
+		-f ${DOCKERFILE_AMD} \
+		-t langflow:${VERSION}-amd .
+
+dockerfile_build_be_amd:
+	@echo 'BUILDING DOCKER IMAGE BACKEND: ${DOCKERFILE_BACKEND_AMD}'
+	@command -v $(DOCKER) >/dev/null 2>&1 || { echo "Error: $(DOCKER) is not installed. Please install $(DOCKER), or run 'make docker_build_backend DOCKER=podman' (or DOCKER=docker) if you have an alternative installed."; exit 1; }
+	@$(DOCKER) build --arch=amd64 --rm \
+		-f ${DOCKERFILE_BACKEND_AMD} \
+		-t langflow_backend:${VERSION}-backend-amd .
 
 dockerfile_build_be: dockerfile_build
 	@echo 'BUILDING DOCKER IMAGE BACKEND: ${DOCKERFILE_BACKEND}'
