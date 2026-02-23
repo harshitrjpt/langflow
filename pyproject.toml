@@ -143,6 +143,8 @@ dependencies = [
     "aioboto3>=15.2.0,<16.0.0",
     "setuptools>=80.0.0,<81.0.0",
     "wheel>=0.46.2,<1.0.0",
+    "torch==2.10.0+cpu; platform_system == 'Linux' and platform_machine == 'x86_64'",
+    "torchvision==0.25.0+cpu; platform_system == 'Linux' and platform_machine == 'x86_64'"
 ]
 
 
@@ -209,7 +211,7 @@ members = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/backend/langflow"]
+packages = ["src/backend/base/langflow"]
 
 [project.urls]
 Repository = "https://github.com/langflow-ai/langflow"
